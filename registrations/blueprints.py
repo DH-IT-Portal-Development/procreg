@@ -2,12 +2,15 @@ from django.urls import reverse
 import logging
 
 info = logging.info
+debuf = logging.debug
 
 from uil.questions.blueprints import Blueprint
 
 from .models import Registration
 from .forms import NewRegistrationQuestion, CategoryQuestion, \
-    TraversalQuestion, QUESTIONS, FacultyQuestion
+    TraversalQuestion, QUESTIONS, FacultyQuestion, \
+    UsesInformationQuestion, ConfirmInformationUseQuestion, \
+    SubmitQuestion
 
 
 
@@ -20,6 +23,7 @@ class RegistrationBlueprint():
     def __init__(self, registration):
 
         self.required = []
+        self.completed = []
 
         self.consumers = [BasicDetailsConsumer]
         self.registration = registration
@@ -72,7 +76,13 @@ class BaseConsumer:
 
         self.blueprint = blueprint
 
+    def complete(self, out_list):
+
+        return out_list
+
 class BaseQuestionConsumer(BaseConsumer):
+
+    questions = []
 
     def get_question_errors(self):
 
@@ -86,16 +96,27 @@ class BaseQuestionConsumer(BaseConsumer):
 
         return errors
 
+    def complete(self, out_list):
+
+        self.blueprint.completed += self.questions
+
+        return super().complete(out_list)
+
 class BasicDetailsConsumer(BaseConsumer):
+
+    questions = [
+        NewRegistrationQuestion,
+        FacultyQuestion,
+        ]
 
     def consume(self):
 
         if self.check_details():
-            self.blueprint.desired_next = TraversalQuestion
+            self.blueprint.desired_next = UsesInformationQuestion
         else:
-            return []
+            return self.complete([])
 
-        return [TraversalConsumer]
+        return [UsesInformationConsumer]
 
     def check_details(self):
 
@@ -114,18 +135,56 @@ class BasicDetailsConsumer(BaseConsumer):
 
 class TraversalConsumer(BaseQuestionConsumer):
 
-    question = TraversalQuestion
+    questions = [TraversalQuestion]
 
     def consume(self):
 
         if self.check_details():
-            self.blueprint.desired_next = FacultyQuestion
+            self.blueprint.desired_next = UsesInformationQuestion
 
         return []
 
     def check_details(self):
 
         return fields_not_empty(self.question.Meta.fields)
+
+
+class UsesInformationConsumer(BaseQuestionConsumer):
+
+    questions = [UsesInformationQuestion]
+
+    def consume(self):
+
+        if not self.check_details():
+            return []
+
+        answer = self.blueprint.registration.uses_information
+        if answer  == False:
+            self.blueprint.desired_next = ConfirmInformationUseQuestion
+            return []
+        elif answer == True:
+            self.blueprint.desired_next = TraversalQuestion
+
+        return []
+
+    def check_details(self):
+
+        return fields_not_empty(self.questions[0].Meta.fields)
+
+
+
+
+class ConfirmInformationUseConsumer(BaseQuestionConsumer):
+
+    questions = [ConfirmInformationUseQuestion]
+
+    def consume(self):
+
+        return []
+
+    def check_details(self):
+
+        return fields_not_empty(self.questions[0].Meta.fields)
 
         
 
