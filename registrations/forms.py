@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.urls import reverse
 
-from uil.questions import questions
+from cdh.questions import questions
 from .models import Registration, ParticipantCategory
 
 
