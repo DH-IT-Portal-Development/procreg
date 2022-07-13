@@ -3,7 +3,7 @@ from django.views import generic
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from uil.questions.views import BlueprintView, QuestionEditView, \
+from cdh.questions.views import BlueprintView, QuestionEditView, \
     QuestionDeleteView, QuestionCreateView
 
 from .models import Registration, ParticipantCategory
@@ -89,6 +89,8 @@ class RegistrationQuestionEditView(QuestionEditView,
     "Edit a question relating to a Registration or a submodel"
 
     def get_success_url(self):
+
+        self.question = self.get_form()
 
         if hasattr(self.question, 'get_success_url'):
             return self.question.get_success_url()

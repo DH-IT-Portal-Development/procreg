@@ -4,7 +4,7 @@ import logging
 info = logging.info
 debuf = logging.debug
 
-from uil.questions.blueprints import Blueprint
+from cdh.questions.blueprints import Blueprint
 
 from .models import Registration
 from .forms import NewRegistrationQuestion, CategoryQuestion, \
@@ -21,6 +21,7 @@ class RegistrationBlueprint():
     ]
 
     def __init__(self, registration):
+        "Set up starting values for blueprint evaluation"
 
         self.required = []
         self.completed = []
