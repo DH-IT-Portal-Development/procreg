@@ -1,3 +1,6 @@
+import logging
+debug = logging.debug
+
 from django.shortcuts import render
 from django.views import generic
 from django.urls import reverse_lazy
@@ -84,7 +87,8 @@ class RegistrationSummaryView(RegistrationMixin,
     
 
 class RegistrationQuestionEditView(QuestionEditView,
-                                   RegistrationMixin):
+                                   RegistrationMixin,
+                                   ):
 
     "Edit a question relating to a Registration or a submodel"
 

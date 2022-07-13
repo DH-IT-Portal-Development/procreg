@@ -59,6 +59,8 @@ class NewRegistrationQuestion(RegistrationQuestionMixin,
 
 class FacultyQuestion(RegistrationQuestionMixin, questions.Question):
 
+    show_progress = True
+    
     class Meta:
         model = Registration
         fields = [
@@ -200,6 +202,8 @@ class SubmitQuestion(RegistrationQuestionMixin, questions.Question):
 
 class CategoryQuestion(RegistrationQuestionMixin, questions.Question):
 
+    show_progress = True
+    
     class Meta:
         model = ParticipantCategory
         fields = [
