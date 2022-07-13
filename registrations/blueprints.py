@@ -131,7 +131,7 @@ class BaseQuestionConsumer(BaseConsumer):
 
         return errors
 
-    def complete(self, out_list):
+    def complete(self, out_list=[]):
 
         self.blueprint.completed += self.questions
 
@@ -271,8 +271,6 @@ class ConfirmInformationUseConsumer(BaseQuestionConsumer):
 
         return fields_not_empty(self.questions[0].Meta.fields)
 
-        
-        
 def has_empty_fields(fields):
     "Check if any of these fields are empty"
     errors = []
@@ -285,3 +283,11 @@ def has_empty_fields(fields):
         return errors
     else:
         return False
+
+def fields_not_empty(fields):
+
+    if has_empty_fields(fields) == False:
+        return True
+
+    return False
+        
