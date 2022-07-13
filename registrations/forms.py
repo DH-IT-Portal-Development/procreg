@@ -148,7 +148,6 @@ class ConfirmInformationUseQuestion(RegistrationQuestionMixin, questions.Questio
 
         segments = []
         
-        
         content = questions.Segment()
         content.type = "paragraph"
         content.paragraph = self.description
@@ -159,11 +158,7 @@ class ConfirmInformationUseQuestion(RegistrationQuestionMixin, questions.Questio
     def get_success_url(self):
 
         return reverse(
-            'edit_question',
-            args={
-                'reg_pk': self.registraion.pk,
-                'question': SubmitQuestion,
-            }
+            "registrations:home"
         )
 
 
